@@ -38,7 +38,7 @@ class OrderRequestsController < ApplicationController
   end
 
   def glb
-    return @glb if @glb
+    return @glb if defined?(@glb)
     @glb =
       case
       when params[:glb]
@@ -59,9 +59,8 @@ class OrderRequestsController < ApplicationController
   end
 
   def ghb
-    return @ghb if @ghb
-    id = params[:ghb]
-    return id.to_i if id
-    @ghb = OrderRequest.where(account_id: account_id).maximum('id')
+    return @ghb if defined?(@ghb)
+    @ghb ||= params[:ghb]
+    @ghb ||= OrderRequest.where(account_id: account_id).maximum('id')
   end
 end

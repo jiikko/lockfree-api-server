@@ -5,7 +5,7 @@ describe 'OrderRequestsController' do
     require 'active_support/testing/time_helpers'
 
     ActiveRecord::Base.transaction do
-      50.times do |i|
+      51.times do |i|
         now = Time.new(2014, 5, 10, 0, 0, 0) + i
         extend ActiveSupport::Testing::TimeHelpers
         travel_to(now) do
@@ -32,7 +32,7 @@ describe 'OrderRequestsController' do
       create_timeseries_data!
       json_list = []
       next_url = '/order_requests?account_id=1'
-      1.upto(OrderRequest.where(account_id: 1).count / limit) do |i|
+      1.upto((OrderRequest.where(account_id: 1).count / limit.to_f).ceil(0)) do |i|
         get(next_url)
         expected = base_query.page(i).per(limit).map { |o| slice_attribute(o) }
         json = JSON.parse(response.body)
