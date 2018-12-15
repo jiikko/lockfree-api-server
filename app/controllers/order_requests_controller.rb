@@ -2,14 +2,15 @@
 # ghb: Greatest higher bound
 
 class OrderRequestsController < ApplicationController
-  LIMIT = 200
+  class_attribute :paginatin_per_limit
+  self.paginatin_per_limit = 100
 
   def index
-    scope = OrderRequest.where(account_id: account_id).order(:id).limit(LIMIT)
+    scope = OrderRequest.where(account_id: account_id).order(:id).limit(paginatin_per_limit)
     scope.where!('id > ?', glb) if glb
     scope.where!('id <= ?', ghb) if ghb
     next_url =
-      if scope[-1] && ghb == scope[-1].id || scope.to_a.size < LIMIT
+      if scope[-1] && ghb == scope[-1].id || scope.to_a.size < self.paginatin_per_limit
         nil
       else
         [ request.path_info,
